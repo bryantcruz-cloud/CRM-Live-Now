@@ -1,0 +1,66 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+
+## Visual Studio
+.vs/
+*.vscode/
+*.vspscc
+*.vssscc
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+
+## NuGet
+*.nupkg
+**/packages/*
+!**/packages/build/
+
+## Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+## macOS
+.DS_Store
+
+## IDE
+.idea/
+*.swp
+*.swo
+
+## Publish
+publish/
+*.publish.xml
+
+## Database
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+## Logs
+logs/
+*.log
+
+## Secrets
+appsettings.Development.json
+appsettings.Production.json
+*.pfx
+*.key

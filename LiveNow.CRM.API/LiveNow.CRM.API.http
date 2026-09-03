@@ -1,0 +1,6 @@
+@LiveNow.CRM.API_HostAddress = http://localhost:5181
+
+GET {{LiveNow.CRM.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
