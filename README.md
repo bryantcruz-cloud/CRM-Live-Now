@@ -99,6 +99,84 @@ El sistema soporta múltiples proveedores de base de datos configurables:
 }
 ```
 
+## Modelo de Dominio (Fase 2)
+
+### Entidades
+
+| Entidad | Descripción |
+|---------|-------------|
+| `Customer` | Clientes con información de contacto y estatus. |
+| `Race` | Carrera permanente (Chicago Marathon, Berlin Marathon, etc.). Configurable, sin casos especiales codificados. |
+| `RaceEdition` | Edición de carrera por año. Restricción única `Race + Year`. |
+| `RaceSlot` | Plaza/entrada individual del inventario. Restricción única `InternalCode`. Trazable por su historial (venta, transferencia, cancelación). |
+| `Supplier` | Proveedor de entradas, hoteles u otros servicios. |
+| `Quote` / `QuoteItem` | Cotización y su detalle (Entrada, Hotel, Transporte, Seguro, Tour, Asistencia, Otros). |
+| `Sale` / `SaleItem` | Venta confirmada y su detalle. |
+| `Payment` / `PaymentFee` | Pagos del cliente y comisiones/costos del método de pago (porcentual, fijo, porcentual + fijo, sin comisión). |
+| `Hotel` / `HotelReservation` | Catálogo de hoteles y reservas vinculadas a cliente/venta. |
+| `RunnerRegistration` | Registro operativo del corredor (Pending, InProgress, Completed, Cancelled). |
+| `CustomerChecklist` | Checklist operativo por cliente/venta. Elementos configurables. |
+| `Cancellation` | Cancelaciones con razón, indicador de lesión y posibilidad de reasignar plaza. |
+| `SlotTransfer` | Transferencia/reasignación de plazas entre clientes. |
+| `AuditLog` | Auditoría de operaciones (Entity, Action, OldValues, NewValues, Timestamp). |
+
+### Enums principales
+
+| Enum | Valores |
+|------|---------|
+| `SlotStatusEnum` | Available, Reserved, Sold, Registered, Cancelled, Injured, Transferable, Transferred, Lost |
+| `PaymentMethodEnum` | Card, BankTransfer, Cash, Deposit, Other |
+| `PaymentFeeTypeEnum` | Percentage, FixedAmount, PercentagePlusFixed, NoFee |
+| `QuoteItemTypeEnum` / `SaleItemTypeEnum` | Entry, Hotel, Transport, Insurance, Tour, Assistance, Other |
+| `CurrencyEnum` | USD, EUR, MXN, GBP, JPY, CAD |
+
+### Conceptos financieros
+
+El modelo distingue explícitamente (sin mezclarlos):
+
+- **Precio de venta**: `Sale.TotalSalePrice` / `SaleItem.TotalPrice`
+- **Costo de adquisición**: `RaceSlot.AcquisitionCost` / `SaleItem.TotalCost`
+- **Comisión de pago**: `PaymentFee.CalculatedAmount`
+- **Pago recibido**: suma de `Payment.Amount` con `Status == Completed`
+- **Saldo pendiente**: `Sale.TotalSalePrice - (suma de pagos válidos)`
+- **Ganancia bruta**: `Sale.GrossProfit = TotalSalePrice - TotalCost - TotalPaymentFees`
+- **Margen**: `Sale.ProfitMargin = GrossProfit / TotalSalePrice`
+
+Todos los montos usan `decimal` (precisión 18,2 / 18,4 para márgenes). **Nunca se usa `float`/`double` para dinero.**
+
+Los campos de ganancia (`TotalCost`, `TotalPaymentFees`, `GrossProfit`, `ProfitMargin`) son **recalculables** a partir de los items, pagos y fees para mantenerse consistentes si cambian los datos de origen.
+
+### Estructura de EF Core
+
+```
+LiveNow.CRM.Infrastructure/
+├── Configurations/   → Configuración por entidad (PK, FK, índices, únicos, precisión decimal, delete behaviors)
+├── Data/
+│   ├── LiveNowDbContext.cs  → DbSets y aplicación de configuraciones + seed
+│   ├── SeedData.cs          → Datos seed de desarrollo (Chicago, Berlín y sus ediciones 2026)
+│   └── UnitOfWork.cs        → Transacciones
+├── Migrations/       → Migraciones de EF Core
+└── DependencyInjection.cs   → Registro de servicios (sqlite/sqlserver/postgresql)
+```
+
+### Migraciones
+
+```bash
+# Crear una migración
+cd LiveNow.CRM.Infrastructure
+dotnet ef migrations add <Nombre> --startup-project ..\LiveNow.CRM.API
+
+# Aplicar la migración a la base de datos local
+dotnet ef database update --startup-project ..\LiveNow.CRM.API
+
+# Revertir la última migración
+dotnet ef migrations remove --startup-project ..\LiveNow.CRM.API
+```
+
+La primera migración es `InitialCreate` (crea todas las tablas + datos seed de desarrollo).
+
+> ⚠️ La base de datos SQLite generada en desarrollo (`*.db`) está ignorada por Git.
+
 ## Módulos Planificados
 
 - Dashboard

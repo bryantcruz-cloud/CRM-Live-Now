@@ -12,26 +12,26 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection")
+        string? connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-        var databaseProvider = configuration.GetValue<string>("DatabaseProvider")?.ToLowerInvariant();
+        string? databaseProvider = configuration["DatabaseProvider"]?.ToLowerInvariant();
 
         services.AddDbContext<LiveNowDbContext>(options =>
         {
             switch (databaseProvider)
             {
                 case "sqlite":
-                    options.UseSqlite(connectionString);
+                    options.UseSqlite(connectionString, b => b.MigrationsAssembly("LiveNow.CRM.Infrastructure"));
                     break;
                 case "sqlserver":
-                    options.UseSqlServer(connectionString);
+                    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("LiveNow.CRM.Infrastructure"));
                     break;
                 case "postgresql":
-                    options.UseNpgsql(connectionString);
+                    options.UseNpgsql(connectionString, b => b.MigrationsAssembly("LiveNow.CRM.Infrastructure"));
                     break;
                 default:
-                    options.UseSqlite(connectionString);
+                    options.UseSqlite(connectionString, b => b.MigrationsAssembly("LiveNow.CRM.Infrastructure"));
                     break;
             }
         });

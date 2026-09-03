@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using LiveNow.CRM.Core.Common;
 using LiveNow.CRM.Core.Enums;
 using Xunit;
@@ -10,10 +11,8 @@ public class InfrastructureTests
     [Fact]
     public void BaseEntity_Should_Have_New_Guid_By_Default()
     {
-        // Arrange & Act
-        var entity = new TestEntity();
+        TestEntity entity = new();
 
-        // Assert
         entity.Id.Should().NotBe(Guid.Empty);
         entity.IsActive.Should().BeTrue();
         entity.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
@@ -22,14 +21,11 @@ public class InfrastructureTests
     [Fact]
     public void BaseEntity_Should_Support_Modification_Tracking()
     {
-        // Arrange
-        var entity = new TestEntity();
+        TestEntity entity = new();
 
-        // Act
         entity.UpdatedAt = DateTime.UtcNow;
         entity.UpdatedBy = "test-user";
 
-        // Assert
         entity.UpdatedAt.Should().NotBeNull();
         entity.UpdatedBy.Should().Be("test-user");
     }
@@ -37,7 +33,6 @@ public class InfrastructureTests
     [Fact]
     public void RaceTypeEnum_Should_Have_Expected_Values()
     {
-        // Assert
         ((int)RaceTypeEnum.Marathon).Should().Be(1);
         ((int)RaceTypeEnum.HalfMarathon).Should().Be(2);
         ((int)RaceTypeEnum.UltraMarathon).Should().Be(3);
@@ -50,7 +45,6 @@ public class InfrastructureTests
     [Fact]
     public void CurrencyEnum_Should_Have_Expected_Values()
     {
-        // Assert
         ((int)CurrencyEnum.USD).Should().Be(1);
         ((int)CurrencyEnum.EUR).Should().Be(2);
         ((int)CurrencyEnum.MXN).Should().Be(3);
