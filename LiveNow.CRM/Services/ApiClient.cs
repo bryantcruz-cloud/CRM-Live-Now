@@ -234,6 +234,42 @@ public class ApiClient
         return await PostAsync<QuoteDto>($"api/quotes/{id}/cancel", ct);
     }
 
+    // Sales
+    public async Task<PagedResult<SaleDto>?> GetSalesAsync(int page = 1, int pageSize = 20, SaleStatusEnum? status = null, CancellationToken ct = default)
+    {
+        string url = $"api/sales?page={page}&pageSize={pageSize}";
+        if (status.HasValue)
+        {
+            url += $"&status={(int)status.Value}";
+        }
+        return await GetAsync<PagedResult<SaleDto>>(url, ct);
+    }
+
+    public async Task<SaleDto?> GetSaleAsync(Guid id, CancellationToken ct = default)
+    {
+        return await GetAsync<SaleDto>($"api/sales/{id}", ct);
+    }
+
+    public async Task<SaleDto?> CreateSaleAsync(CreateSaleDto dto, CancellationToken ct = default)
+    {
+        return await PostAsync<CreateSaleDto, SaleDto>("api/sales", dto, ct);
+    }
+
+    public async Task<SaleDto?> UpdateSaleAsync(Guid id, UpdateSaleDto dto, CancellationToken ct = default)
+    {
+        return await PutAsync<UpdateSaleDto, SaleDto>($"api/sales/{id}", dto, ct);
+    }
+
+    public async Task<SaleDto?> ConfirmSaleAsync(Guid id, ConfirmSaleDto dto, CancellationToken ct = default)
+    {
+        return await PostAsync<ConfirmSaleDto, SaleDto>($"api/sales/{id}/confirm", dto, ct);
+    }
+
+    public async Task<SaleFinancialSummaryDto?> GetSaleFinancialSummaryAsync(Guid saleId, CancellationToken ct = default)
+    {
+        return await GetAsync<SaleFinancialSummaryDto>($"api/sales/{saleId}/financial-summary", ct);
+    }
+
     // Audit
     public async Task<IReadOnlyList<AuditLogDto>?> GetAuditLogsAsync(int limit = 50, CancellationToken ct = default)
     {
