@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="LiveNow.CRM.Views.QuoteDetailDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Detalle de cotización"
+    CloseButtonText="Cerrar"
+    Style="{StaticResource DefaultContentDialogStyle}">
+
+    <ScrollViewer MaxHeight="500">
+        <StackPanel Spacing="12" Padding="0,8,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Número" FontSize="12" Opacity="0.7" />
+                    <TextBlock x:Name="QuoteNumberText" FontWeight="SemiBold" FontSize="16" />
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="Estado" FontSize="12" Opacity="0.7" />
+                    <TextBlock x:Name="StatusText" FontWeight="SemiBold" FontSize="16" />
+                </StackPanel>
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Moneda" FontSize="12" Opacity="0.7" />
+                    <TextBlock x:Name="CurrencyText" FontSize="14" />
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="Válida hasta" FontSize="12" Opacity="0.7" />
+                    <TextBlock x:Name="ValidUntilText" FontSize="14" />
+                </StackPanel>
+            </Grid>
+            <TextBlock Text="Notas" FontSize="12" Opacity="0.7" />
+            <TextBlock x:Name="NotesText" FontSize="14" TextWrapping="Wrap" />
+
+            <TextBlock Text="Items" FontWeight="SemiBold" FontSize="16" />
+            <ListView x:Name="ItemsListView" SelectionMode="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="4">
+                            <StackPanel>
+                                <TextBlock FontWeight="SemiBold">
+                                    <Run Text="{Binding ItemType}" /><Run Text=" - " /><Run Text="{Binding Description}" />
+                                </TextBlock>
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <TextBlock FontSize="12" Opacity="0.6">
+                                        <Run Text="Cant: " /><Run Text="{Binding Quantity}" />
+                                    </TextBlock>
+                                    <TextBlock FontSize="12" Opacity="0.6">
+                                        <Run Text="Costo: " /><Run Text="{Binding UnitCost}" />
+                                    </TextBlock>
+                                    <TextBlock FontSize="12" Opacity="0.6">
+                                        <Run Text="Precio: " /><Run Text="{Binding UnitPrice}" />
+                                    </TextBlock>
+                                    <TextBlock FontSize="12" Opacity="0.6">
+                                        <Run Text="Total: " /><Run Text="{Binding TotalPrice}" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                    <TextBlock FontSize="14">
+                        <Run Text="Subtotal: " /><Run x:Name="SubtotalText" />
+                    </TextBlock>
+                    <TextBlock FontSize="14">
+                        <Run Text="Descuento: " /><Run x:Name="DiscountText" />
+                    </TextBlock>
+                    <TextBlock FontSize="14">
+                        <Run Text="Impuestos: " /><Run x:Name="TaxesText" />
+                    </TextBlock>
+                    <TextBlock FontSize="18" FontWeight="Bold" Margin="0,4,0,0">
+                        <Run Text="Total: " /><Run x:Name="TotalText" />
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>

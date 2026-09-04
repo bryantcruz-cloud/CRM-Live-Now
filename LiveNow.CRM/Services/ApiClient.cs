@@ -193,6 +193,47 @@ public class ApiClient
         return await PostAsync<SlotTransferRequestDto, SlotTransferDto>($"api/race-slots/{slotId}/transfer", dto, ct);
     }
 
+    // Quotes
+    public async Task<PagedResult<QuoteDto>?> GetQuotesAsync(int page = 1, int pageSize = 20, QuoteStatusEnum? status = null, CancellationToken ct = default)
+    {
+        string url = $"api/quotes?page={page}&pageSize={pageSize}";
+        if (status.HasValue)
+        {
+            url += $"&status={(int)status.Value}";
+        }
+        return await GetAsync<PagedResult<QuoteDto>>(url, ct);
+    }
+
+    public async Task<QuoteDto?> GetQuoteAsync(Guid id, CancellationToken ct = default)
+    {
+        return await GetAsync<QuoteDto>($"api/quotes/{id}", ct);
+    }
+
+    public async Task<QuoteDto?> CreateQuoteAsync(CreateQuoteDto dto, CancellationToken ct = default)
+    {
+        return await PostAsync<CreateQuoteDto, QuoteDto>("api/quotes", dto, ct);
+    }
+
+    public async Task<QuoteDto?> UpdateQuoteAsync(Guid id, UpdateQuoteDto dto, CancellationToken ct = default)
+    {
+        return await PutAsync<UpdateQuoteDto, QuoteDto>($"api/quotes/{id}", dto, ct);
+    }
+
+    public async Task<QuoteDto?> SendQuoteAsync(Guid id, CancellationToken ct = default)
+    {
+        return await PostAsync<QuoteDto>($"api/quotes/{id}/send", ct);
+    }
+
+    public async Task<QuoteDto?> AcceptQuoteAsync(Guid id, CancellationToken ct = default)
+    {
+        return await PostAsync<QuoteDto>($"api/quotes/{id}/accept", ct);
+    }
+
+    public async Task<QuoteDto?> CancelQuoteAsync(Guid id, CancellationToken ct = default)
+    {
+        return await PostAsync<QuoteDto>($"api/quotes/{id}/cancel", ct);
+    }
+
     // Audit
     public async Task<IReadOnlyList<AuditLogDto>?> GetAuditLogsAsync(int limit = 50, CancellationToken ct = default)
     {
