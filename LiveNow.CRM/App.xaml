@@ -12,6 +12,7 @@
             </ResourceDictionary.MergedDictionaries>
             <helpers:BoolToBrushConverter x:Key="BoolToBrushConverter" />
             <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <helpers:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
