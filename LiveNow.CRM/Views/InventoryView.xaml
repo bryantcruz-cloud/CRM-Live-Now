@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="LiveNow.CRM.Views.InventoryView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Grid.Column="0"
+                Text="Inventario / Plazas"
+                FontSize="28"
+                FontWeight="SemiBold"
+                VerticalAlignment="Center" />
+            <Button
+                Grid.Column="1"
+                Content="Actualizar"
+                Click="RefreshButton_Click"
+                VerticalAlignment="Center" />
+        </Grid>
+
+        <!-- Filters -->
+        <Grid Grid.Row="1" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ComboBox
+                Grid.Column="0"
+                Header="Carrera"
+                ItemsSource="{x:Bind ViewModel.Races, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedRace, Mode=TwoWay}"
+                DisplayMemberPath="Name"
+                HorizontalAlignment="Stretch"
+                Margin="0,0,8,0"
+                PlaceholderText="Todas las carreras" />
+            <ComboBox
+                Grid.Column="1"
+                Header="Edición"
+                ItemsSource="{x:Bind ViewModel.Editions, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedEdition, Mode=TwoWay}"
+                DisplayMemberPath="Year"
+                HorizontalAlignment="Stretch"
+                Margin="0,0,8,0"
+                PlaceholderText="Todas las ediciones"
+                IsEnabled="{x:Bind ViewModel.HasEditions, Mode=OneWay}" />
+            <ComboBox
+                Grid.Column="2"
+                Header="Estado"
+                ItemsSource="{x:Bind ViewModel.StatusFilterOptions, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedStatusFilter, Mode=TwoWay}"
+                HorizontalAlignment="Stretch"
+                Margin="0,0,8,0"
+                PlaceholderText="Todos los estados" />
+        </Grid>
+
+        <!-- Search bar -->
+        <Grid Grid.Row="2" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+                Grid.Column="0"
+                PlaceholderText="Buscar por código interno..."
+                Text="{x:Bind ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                VerticalAlignment="Center">
+                <TextBox.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="Enter" Invoked="SearchBox_Invoked" />
+                </TextBox.KeyboardAccelerators>
+            </TextBox>
+            <Button
+                Grid.Column="1"
+                Content="Buscar"
+                Margin="8,0,0,0"
+                Click="SearchButton_Click"
+                VerticalAlignment="Center" />
+        </Grid>
+
+        <!-- Error message -->
+        <InfoBar
+            Grid.Row="3"
+            IsOpen="{x:Bind ViewModel.HasError, Mode=OneWay}"
+            Severity="Error"
+            Message="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+            Margin="0,0,0,12"
+            CloseButtonClick="InfoBar_CloseButtonClick" />
+
+        <!-- Summary cards -->
+        <Grid Grid.Row="4" Margin="0,0,0,12">
+            <Grid.Visibility>
+                <Binding Path="ViewModel.HasEditionSelected" Mode="OneWay">
+                    <Binding.Converter>
+                        <helpers:BoolToVisibilityConverter xmlns:helpers="using:LiveNow.CRM.Helpers" />
+                    </Binding.Converter>
+                </Binding>
+            </Grid.Visibility>
+        </Grid>
+
+        <!-- Loading -->
+        <ProgressRing
+            Grid.Row="5"
+            IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Width="50" Height="50" />
+
+        <!-- Content -->
+        <Grid Grid.Row="5" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Summary panel -->
+            <Grid Grid.Row="0" Margin="0,0,0,12" Visibility="{x:Bind ViewModel.HasEditionSelected, Mode=OneWay}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,6,0">
+                    <StackPanel>
+                        <TextBlock Text="Total" FontSize="12" Opacity="0.7" />
+                        <TextBlock Text="{x:Bind ViewModel.InventorySummary.Total, Mode=OneWay}" FontSize="24" FontWeight="Bold" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="3,0,3,0">
+                    <StackPanel>
+                        <TextBlock Text="Disponibles" FontSize="12" Opacity="0.7" />
+                        <TextBlock Text="{x:Bind ViewModel.InventorySummary.AvailableCount, Mode=OneWay}" FontSize="24" FontWeight="Bold" Foreground="Green" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="3,0,3,0">
+                    <StackPanel>
+                        <TextBlock Text="Reservadas" FontSize="12" Opacity="0.7" />
+                        <TextBlock Text="{x:Bind ViewModel.InventorySummary.ReservedCount, Mode=OneWay}" FontSize="24" FontWeight="Bold" Foreground="Orange" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="3" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="6,0,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Vendidas" FontSize="12" Opacity="0.7" />
+                        <TextBlock Text="{x:Bind ViewModel.InventorySummary.SoldCount, Mode=OneWay}" FontSize="24" FontWeight="Bold" Foreground="DodgerBlue" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Slots list -->
+            <Grid Grid.Row="1">
+                <!-- No edition selected -->
+                <TextBlock
+                    Text="Seleccione una carrera y edición para ver las plazas"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Opacity="0.6"
+                    TextWrapping="Wrap"
+                    TextAlignment="Center"
+                    Visibility="{x:Bind ViewModel.HasEditionSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                <!-- No slots -->
+                <TextBlock
+                    Text="No se encontraron plazas"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Opacity="0.6"
+                    Visibility="{x:Bind ViewModel.HasSlots, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                <ListView
+                    ItemsSource="{x:Bind ViewModel.Slots, Mode=OneWay}"
+                    SelectionMode="None"
+                    Visibility="{x:Bind ViewModel.HasSlots, Mode=OneWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock FontWeight="SemiBold" FontSize="16">
+                                        <Run Text="Código: " /><Run Text="{Binding InternalCode}" />
+                                    </TextBlock>
+                                    <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4,0,0">
+                                        <TextBlock FontSize="12" Opacity="0.6">
+                                            <Run Text="Costo: " /><Run Text="{Binding AcquisitionCost}" /><Run Text=" " /><Run Text="{Binding AcquisitionCurrency}" />
+                                        </TextBlock>
+                                        <TextBlock FontSize="12" Opacity="0.6">
+                                            <Run Text="Estado: " /><Run Text="{Binding Status}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Grid>
+
+        <!-- Pagination -->
+        <Grid Grid.Row="6" Margin="0,12,0,0" Visibility="{x:Bind ViewModel.HasSlots, Mode=OneWay}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Grid.Column="0"
+                Text="{x:Bind ViewModel.PageInfo, Mode=OneWay}"
+                VerticalAlignment="Center"
+                Opacity="0.7" />
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                <Button Content="⏮" Click="FirstPageButton_Click" IsEnabled="{x:Bind ViewModel.HasPreviousPage, Mode=OneWay}" ToolTipService.ToolTip="Primera página" />
+                <Button Content="◀" Click="PreviousPageButton_Click" IsEnabled="{x:Bind ViewModel.HasPreviousPage, Mode=OneWay}" ToolTipService.ToolTip="Página anterior" />
+                <Button Content="▶" Click="NextPageButton_Click" IsEnabled="{x:Bind ViewModel.HasNextPage, Mode=OneWay}" ToolTipService.ToolTip="Página siguiente" />
+                <Button Content="⏭" Click="LastPageButton_Click" IsEnabled="{x:Bind ViewModel.HasNextPage, Mode=OneWay}" ToolTipService.ToolTip="Última página" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>
