@@ -31,6 +31,9 @@ public class RaceSlotConfiguration : IEntityTypeConfiguration<RaceSlot>
         builder.Property(rs => rs.Notes)
             .HasMaxLength(2000);
 
+        builder.Property(rs => rs.Version)
+            .IsConcurrencyToken();
+
         // Unique constraint: InternalCode
         builder.HasIndex(rs => rs.InternalCode)
             .IsUnique();

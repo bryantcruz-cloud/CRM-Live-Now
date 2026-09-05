@@ -1,15 +1,21 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
+
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Navigation;
 using LiveNow.CRM.Core.DTOs;
 using LiveNow.CRM.Services;
 using LiveNow.CRM.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
+
+
+
 namespace LiveNow.CRM.Views;
 
 public sealed partial class QuotesView : Page
 {
-    public QuotesViewModel ViewModel { get; }
+    public QuotesViewModel ViewModel { get; private set; }
 
     private string _successMessage = string.Empty;
     public string SuccessMessage
@@ -61,7 +67,7 @@ public sealed partial class QuotesView : Page
                 var created = await ViewModel.CreateQuoteAsync(dto);
                 if (created != null)
                 {
-                    SuccessMessage = $"Cotización #{created.QuoteNumber} creada exitosamente";
+                    SuccessMessage = $"CotizaciÃƒÂ³n #{created.QuoteNumber} creada exitosamente";
                     SuccessInfoBar.IsOpen = true;
                     await ViewModel.LoadQuotesAsync();
                 }
@@ -102,7 +108,7 @@ public sealed partial class QuotesView : Page
                         var updated = await ViewModel.UpdateQuoteAsync(id, dto);
                         if (updated != null)
                         {
-                            SuccessMessage = $"Cotización #{updated.QuoteNumber} actualizada exitosamente";
+                            SuccessMessage = $"CotizaciÃƒÂ³n #{updated.QuoteNumber} actualizada exitosamente";
                             SuccessInfoBar.IsOpen = true;
                             await ViewModel.LoadQuotesAsync();
                         }
@@ -112,6 +118,36 @@ public sealed partial class QuotesView : Page
         }
     }
 
+    private async void ConvertButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button || button.Tag is not string idText || !Guid.TryParse(idText, out Guid quoteId))
+        {
+            return;
+        }
+
+        QuoteDto? quote = await ViewModel.GetQuoteByIdAsync(quoteId);
+        if (quote is null || quote.Status != Core.Enums.QuoteStatusEnum.Accepted)
+        {
+            return;
+        }
+
+        IReadOnlyList<RaceSlotDto> slots = await ViewModel.GetAvailableSlotsAsync(quote.RaceEditionId);
+        var dialog = new QuoteConversionDialog(quote, slots) { XamlRoot = this.XamlRoot };
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+        {
+            return;
+        }
+
+        QuoteDto? converted = await ViewModel.ConvertQuoteToSaleAsync(quote.Id, dialog.GetConversionDto());
+        if (converted is not null)
+        {
+            SuccessMessage = $"CotizaciÃƒÂ³n #{quote.QuoteNumber} convertida a venta exitosamente.";
+            SuccessInfoBar.IsOpen = true;
+            await ViewModel.LoadQuotesAsync();
+        }
+    }
+
+
     private async void SendButton_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.Tag is string idStr && Guid.TryParse(idStr, out Guid id))
@@ -119,14 +155,14 @@ public sealed partial class QuotesView : Page
             var result = await ViewModel.SendQuoteAsync(id);
             if (result != null)
             {
-                SuccessMessage = $"Cotización #{result.QuoteNumber} enviada exitosamente";
+                SuccessMessage = $"CotizaciÃƒÂ³n #{result.QuoteNumber} enviada exitosamente";
                 SuccessInfoBar.IsOpen = true;
                 await ViewModel.LoadQuotesAsync();
             }
         }
     }
 
-    private async void QuotesList_ItemClick(object sender, ItemClickEventArgs e)
+    private void QuotesList_ItemClick(object sender, ItemClickEventArgs e)
     {
         if (e.ClickedItem is QuoteDto quote)
         {
@@ -169,3 +205,4 @@ public sealed partial class QuotesView : Page
         ViewModel.ClearError();
     }
 }
+

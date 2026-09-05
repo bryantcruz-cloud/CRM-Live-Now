@@ -25,7 +25,7 @@ public class QuotesViewModel : ViewModelBase
     private int _pageSize = 20;
     private int _totalCount;
     private int _totalPages;
-    private RaceDto? _selectedRaceForLoad;
+
 
     public QuotesViewModel(ApiClient apiClient)
     {
@@ -367,5 +367,38 @@ public class QuotesViewModel : ViewModelBase
             SetError($"Error inesperado: {ex.Message}");
             return null;
         }
+    }
+
+
+    public async Task<QuoteDto?> ConvertQuoteToSaleAsync(Guid id, ConvertQuoteToSaleDto dto)
+    {
+        ClearError();
+        IsLoading = true;
+
+        try
+        {
+            return await _apiClient.ConvertQuoteToSaleAsync(id, dto);
+        }
+        catch (ApiException ex)
+        {
+            SetError($"Error al convertir la cotización: {ex.Message}");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            SetError($"Error inesperado al convertir: {ex.Message}");
+            return null;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    public async Task<IReadOnlyList<RaceSlotDto>> GetAvailableSlotsAsync(Guid editionId)
+    {
+        var result = await _apiClient.GetSlotsAsync(editionId, 1, 100);
+        return result?.Items.Where(slot => slot.Status is SlotStatusEnum.Available or SlotStatusEnum.Reserved or SlotStatusEnum.Transferable).ToList()
+            ?? new List<RaceSlotDto>();
     }
 }

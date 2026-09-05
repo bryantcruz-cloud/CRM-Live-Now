@@ -16,6 +16,12 @@ public class RaceSlot : BaseEntity
     public DateTime? SaleDate { get; set; }
     public string? Notes { get; set; }
 
+    /// <summary>
+    /// Optimistic concurrency token. Incremented on every update.
+    /// Protects against two machines selling the same slot simultaneously.
+    /// </summary>
+    public int Version { get; set; }
+
     // Navigation properties
     public RaceEdition RaceEdition { get; set; } = null!;
     public Supplier? Supplier { get; set; }

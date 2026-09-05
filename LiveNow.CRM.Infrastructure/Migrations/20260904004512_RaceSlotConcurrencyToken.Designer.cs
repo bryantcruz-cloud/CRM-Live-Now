@@ -3,6 +3,7 @@ using System;
 using LiveNow.CRM.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiveNow.CRM.Infrastructure.Migrations
 {
     [DbContext(typeof(LiveNowDbContext))]
-    partial class LiveNowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260904004512_RaceSlotConcurrencyToken")]
+    partial class RaceSlotConcurrencyToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -1025,9 +1028,7 @@ namespace LiveNow.CRM.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("QuoteId")
-                        .IsUnique()
-                        .HasFilter("\"QuoteId\" IS NOT NULL");
+                    b.HasIndex("QuoteId");
 
                     b.HasIndex("RaceEditionId");
 

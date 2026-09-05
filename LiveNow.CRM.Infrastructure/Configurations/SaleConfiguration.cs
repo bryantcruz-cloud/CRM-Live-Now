@@ -68,7 +68,10 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
 
         builder.HasIndex(s => s.CustomerId);
         builder.HasIndex(s => s.RaceEditionId);
-        builder.HasIndex(s => s.QuoteId);
+        // A quote may be converted to at most one sale. The filtered unique index preserves multiple null QuoteId values.
+        builder.HasIndex(s => s.QuoteId)
+            .IsUnique()
+            .HasFilter("\"QuoteId\" IS NOT NULL");
         builder.HasIndex(s => s.Status);
         builder.HasIndex(s => s.SaleDate);
 

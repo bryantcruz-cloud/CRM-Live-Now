@@ -135,6 +135,8 @@
                             <Button Content="Ver" Tag="{Binding Id}" Click="ViewButton_Click" />
                             <Button Content="Editar" Tag="{Binding Id}" Click="EditButton_Click" />
                             <Button Content="Enviar" Tag="{Binding Id}" Click="SendButton_Click" />
+                            <Button Content="Convertir a venta" Tag="{Binding Id}" Click="ConvertButton_Click" />
+
                         </StackPanel>
                     </Grid>
                 </DataTemplate>

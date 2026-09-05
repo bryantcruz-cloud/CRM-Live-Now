@@ -1,7 +1,8 @@
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Text.Json;
 using LiveNow.CRM.Core.Common;
 using LiveNow.CRM.Core.DTOs;
+using LiveNow.CRM.Core.Enums;
 
 namespace LiveNow.CRM.Services;
 
@@ -101,53 +102,6 @@ public class ApiClient
         return await PostAsync<CreateRaceSlotDto, RaceSlotDto>("api/race-slots", dto, ct);
     }
 
-    // Quotes
-    public async Task<PagedResult<QuoteDto>?> GetQuotesAsync(int page = 1, int pageSize = 20, CancellationToken ct = default)
-    {
-        return await GetAsync<PagedResult<QuoteDto>>($"api/quotes?page={page}&pageSize={pageSize}", ct);
-    }
-
-    public async Task<QuoteDto?> CreateQuoteAsync(CreateQuoteDto dto, CancellationToken ct = default)
-    {
-        return await PostAsync<CreateQuoteDto, QuoteDto>("api/quotes", dto, ct);
-    }
-
-    public async Task<QuoteDto?> SendQuoteAsync(Guid id, CancellationToken ct = default)
-    {
-        return await PostAsync<QuoteDto>($"api/quotes/{id}/send", ct);
-    }
-
-    public async Task<QuoteDto?> AcceptQuoteAsync(Guid id, CancellationToken ct = default)
-    {
-        return await PostAsync<QuoteDto>($"api/quotes/{id}/accept", ct);
-    }
-
-    public async Task<QuoteDto?> CancelQuoteAsync(Guid id, CancellationToken ct = default)
-    {
-        return await PostAsync<QuoteDto>($"api/quotes/{id}/cancel", ct);
-    }
-
-    // Sales
-    public async Task<PagedResult<SaleDto>?> GetSalesAsync(int page = 1, int pageSize = 20, CancellationToken ct = default)
-    {
-        return await GetAsync<PagedResult<SaleDto>>($"api/sales?page={page}&pageSize={pageSize}", ct);
-    }
-
-    public async Task<SaleDto?> GetSaleAsync(Guid id, CancellationToken ct = default)
-    {
-        return await GetAsync<SaleDto>($"api/sales/{id}", ct);
-    }
-
-    public async Task<SaleDto?> CreateSaleAsync(CreateSaleDto dto, CancellationToken ct = default)
-    {
-        return await PostAsync<CreateSaleDto, SaleDto>("api/sales", dto, ct);
-    }
-
-    public async Task<SaleDto?> ConfirmSaleAsync(Guid id, ConfirmSaleDto dto, CancellationToken ct = default)
-    {
-        return await PostAsync<ConfirmSaleDto, SaleDto>($"api/sales/{id}/confirm", dto, ct);
-    }
-
     // Payments
     public async Task<IReadOnlyList<PaymentDto>?> GetPaymentsAsync(Guid saleId, CancellationToken ct = default)
     {
@@ -232,6 +186,11 @@ public class ApiClient
     public async Task<QuoteDto?> CancelQuoteAsync(Guid id, CancellationToken ct = default)
     {
         return await PostAsync<QuoteDto>($"api/quotes/{id}/cancel", ct);
+    }
+
+    public async Task<QuoteDto?> ConvertQuoteToSaleAsync(Guid id, ConvertQuoteToSaleDto dto, CancellationToken ct = default)
+    {
+        return await PostAsync<ConvertQuoteToSaleDto, QuoteDto>($"api/quotes/{id}/convert-to-sale", dto, ct);
     }
 
     // Sales
@@ -339,3 +298,4 @@ public class ApiException : Exception
         ErrorBody = errorBody;
     }
 }
+
