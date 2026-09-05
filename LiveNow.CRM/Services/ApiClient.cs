@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using LiveNow.CRM.Core.Common;
 using LiveNow.CRM.Core.DTOs;
@@ -13,6 +14,7 @@ namespace LiveNow.CRM.Services;
 public class ApiClient
 {
     private readonly HttpClient _httpClient;
+    private string? _accessToken;
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -26,6 +28,28 @@ public class ApiClient
             BaseAddress = new Uri(baseUrl.TrimEnd('/'))
         };
         _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+    }
+
+    public bool IsAuthenticated => !string.IsNullOrWhiteSpace(_accessToken);
+
+    public void SetAccessToken(string accessToken)
+    {
+        _accessToken = accessToken;
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+    }
+
+    public void ClearAccessToken()
+    {
+        _accessToken = null;
+        _httpClient.DefaultRequestHeaders.Authorization = null;
+    }
+
+    public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request, CancellationToken ct = default)
+    {
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/auth/login", request, JsonOptions, ct);
+        LoginResponseDto? result = await HandleResponse<LoginResponseDto>(response);
+        if (result is not null) SetAccessToken(result.AccessToken);
+        return result;
     }
 
     // Customers
@@ -334,13 +358,14 @@ public class ApiClient
         return await HandleResponse<T>(response);
     }
 
-    private static async Task<T?> HandleResponse<T>(HttpResponseMessage response)
+    private async Task<T?> HandleResponse<T>(HttpResponseMessage response)
     {
         if (response.IsSuccessStatusCode)
         {
             return await response.Content.ReadFromJsonAsync<T>(JsonOptions);
         }
 
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized) ClearAccessToken();
         string errorBody = await response.Content.ReadAsStringAsync();
         throw new ApiException(response.StatusCode, errorBody);
     }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="LiveNow.CRM.Views.LoginView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Padding="32" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="360">
+        <StackPanel Spacing="12">
+            <TextBlock Text="CRM Live Now" FontSize="28" FontWeight="SemiBold" />
+            <TextBlock Text="Iniciar sesión" FontSize="20" />
+            <TextBox x:Name="UserOrEmailBox" Header="Usuario o email" />
+            <PasswordBox x:Name="PasswordBox" Header="Contraseña" />
+            <TextBlock x:Name="ErrorText" Foreground="IndianRed" TextWrapping="Wrap" />
+            <Button x:Name="LoginButton" Content="Entrar" Click="LoginButton_Click" HorizontalAlignment="Stretch" />
+        </StackPanel>
+    </Grid>
+</Page>
