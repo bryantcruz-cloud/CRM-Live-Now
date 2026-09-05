@@ -24,7 +24,7 @@
                     Grid.Column="0"
                     x:Name="CustomerComboBox"
                     Header="Cliente *"
-                    DisplayMemberPath="FirstName"
+                    DisplayMemberPath="DisplayName"
                     HorizontalAlignment="Stretch"
                     Margin="0,0,4,0"
                     PlaceholderText="Seleccione cliente" />

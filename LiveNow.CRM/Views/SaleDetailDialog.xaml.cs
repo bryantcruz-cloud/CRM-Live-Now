@@ -25,7 +25,7 @@ public sealed partial class SaleDetailDialog : ContentDialog
 
         if (financialSummary != null)
         {
-            TotalPaidText.Text = financialSummary.TotalPaid.ToString("N2");
+            TotalPaidText.Text = financialSummary.PaidAmount.ToString("N2");
             OutstandingBalanceText.Text = financialSummary.OutstandingBalance.ToString("N2");
             GrossProfitText.Text = financialSummary.GrossProfit.ToString("N2");
             ProfitMarginText.Text = (financialSummary.ProfitMargin * 100).ToString("N2");

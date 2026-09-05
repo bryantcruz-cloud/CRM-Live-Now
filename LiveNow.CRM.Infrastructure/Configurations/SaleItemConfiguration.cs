@@ -39,6 +39,10 @@ public class SaleItemConfiguration : IEntityTypeConfiguration<SaleItem>
             .HasPrecision(18, 2)
             .IsRequired();
 
+        builder.Property(si => si.RoomType).HasMaxLength(200);
+        builder.Property(si => si.ReservationPolicy).HasMaxLength(1000);
+        builder.Property(si => si.BoardBasis).HasConversion<int>();
+
         builder.HasIndex(si => si.SaleId);
         builder.HasIndex(si => si.RaceSlotId);
 

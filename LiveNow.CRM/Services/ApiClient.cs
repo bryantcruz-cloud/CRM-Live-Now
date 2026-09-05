@@ -113,9 +113,14 @@ public class ApiClient
         return await PostAsync<CreatePaymentDto, PaymentDto>($"api/sales/{saleId}/payments", dto, ct);
     }
 
+    public async Task<PagedResult<SaleDto>?> GetSalesForPaymentsAsync(int page = 1, int pageSize = 100, CancellationToken ct = default)
+    {
+        return await GetAsync<PagedResult<SaleDto>>($"api/sales?page={page}&pageSize={pageSize}", ct);
+    }
+
     public async Task<SaleFinancialSummaryDto?> GetFinancialSummaryAsync(Guid saleId, CancellationToken ct = default)
     {
-        return await GetAsync<SaleFinancialSummaryDto>($"api/reports/sales/{saleId}/financial-summary", ct);
+        return await GetAsync<SaleFinancialSummaryDto>($"api/sales/{saleId}/financial-summary", ct);
     }
 
     // Hotels
@@ -124,15 +129,45 @@ public class ApiClient
         return await GetAsync<IReadOnlyList<HotelDto>>("api/hotels", ct);
     }
 
+    public async Task<HotelDto?> CreateHotelAsync(CreateHotelDto dto, CancellationToken ct = default)
+    {
+        return await PostAsync<CreateHotelDto, HotelDto>("api/hotels", dto, ct);
+    }
+
+    public async Task<HotelDto?> UpdateHotelAsync(Guid id, UpdateHotelDto dto, CancellationToken ct = default)
+    {
+        return await PutAsync<UpdateHotelDto, HotelDto>($"api/hotels/{id}", dto, ct);
+    }
+
     public async Task<IReadOnlyList<HotelReservationDto>?> GetHotelReservationsAsync(CancellationToken ct = default)
     {
         return await GetAsync<IReadOnlyList<HotelReservationDto>>("api/hotel-reservations", ct);
+    }
+
+    public async Task<HotelReservationDto?> CreateHotelReservationAsync(CreateHotelReservationDto dto, CancellationToken ct = default)
+    {
+        return await PostAsync<CreateHotelReservationDto, HotelReservationDto>("api/hotel-reservations", dto, ct);
+    }
+
+    public async Task<HotelReservationDto?> UpdateHotelReservationAsync(Guid id, UpdateHotelReservationDto dto, CancellationToken ct = default)
+    {
+        return await PutAsync<UpdateHotelReservationDto, HotelReservationDto>($"api/hotel-reservations/{id}", dto, ct);
     }
 
     // Registrations
     public async Task<IReadOnlyList<RegistrationDto>?> GetRegistrationsAsync(CancellationToken ct = default)
     {
         return await GetAsync<IReadOnlyList<RegistrationDto>>("api/registrations", ct);
+    }
+
+    public async Task<RegistrationDto?> CreateRegistrationAsync(CreateRegistrationDto dto, CancellationToken ct = default)
+    {
+        return await PostAsync<CreateRegistrationDto, RegistrationDto>("api/registrations", dto, ct);
+    }
+
+    public async Task<RegistrationDto?> UpdateRegistrationAsync(Guid id, UpdateRegistrationDto dto, CancellationToken ct = default)
+    {
+        return await PutAsync<UpdateRegistrationDto, RegistrationDto>($"api/registrations/{id}", dto, ct);
     }
 
     // Cancellations

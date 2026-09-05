@@ -82,6 +82,8 @@ public class QuoteService : IQuoteService
             throw new ValidationException("QUOTE_TOTALS_INVALID", "El descuento y los impuestos no pueden ser negativos.");
         }
 
+        await ValidateHotelItemsAsync(dto.Items, cancellationToken);
+
         Quote quote = new()
         {
             QuoteNumber = GenerateQuoteNumber(),
@@ -128,6 +130,8 @@ public class QuoteService : IQuoteService
         {
             throw new ValidationException("QUOTE_TOTALS_INVALID", "El descuento y los impuestos no pueden ser negativos.");
         }
+
+        await ValidateHotelItemsAsync(dto.Items, cancellationToken);
 
         _context.QuoteItems.RemoveRange(quote.Items);
         quote.Items.Clear();
@@ -249,7 +253,17 @@ public class QuoteService : IQuoteService
                     UnitCost = quoteItem.UnitCost,
                     UnitPrice = quoteItem.UnitPrice,
                     TotalCost = quoteItem.TotalCost,
-                    TotalPrice = quoteItem.TotalPrice
+                    TotalPrice = quoteItem.TotalPrice,
+                    HotelId = quoteItem.HotelId,
+                    SupplierId = quoteItem.SupplierId,
+                    CheckIn = quoteItem.CheckIn,
+                    CheckOut = quoteItem.CheckOut,
+                    Nights = quoteItem.Nights,
+                    RoomType = quoteItem.RoomType,
+                    NumberOfRooms = quoteItem.NumberOfRooms,
+                    Occupancy = quoteItem.Occupancy,
+                    BoardBasis = quoteItem.BoardBasis,
+                    ReservationPolicy = quoteItem.ReservationPolicy
                 };
                 _context.SaleItems.Add(saleItem);
             }
@@ -359,8 +373,46 @@ public class QuoteService : IQuoteService
             UnitPrice = dto.UnitPrice,
             TotalCost = dto.UnitCost * dto.Quantity,
             TotalPrice = dto.UnitPrice * dto.Quantity,
-            Notes = dto.Notes
+            Notes = dto.Notes,
+            HotelId = dto.HotelId,
+            SupplierId = dto.SupplierId,
+            CheckIn = dto.CheckIn,
+            CheckOut = dto.CheckOut,
+            Nights = dto.ItemType == QuoteItemTypeEnum.Hotel && dto.CheckIn.HasValue && dto.CheckOut.HasValue
+                ? (dto.CheckOut.Value.Date - dto.CheckIn.Value.Date).Days
+                : null,
+            RoomType = dto.RoomType,
+            NumberOfRooms = dto.NumberOfRooms,
+            Occupancy = dto.Occupancy,
+            BoardBasis = dto.BoardBasis,
+            ReservationPolicy = dto.ReservationPolicy
         };
+    }
+
+    private async Task ValidateHotelItemsAsync(IEnumerable<CreateQuoteItemDto> items, CancellationToken cancellationToken)
+    {
+        foreach (CreateQuoteItemDto item in items.Where(item => item.ItemType == QuoteItemTypeEnum.Hotel))
+        {
+            if (!item.HotelId.HasValue)
+            {
+                throw new ValidationException("HOTEL_REQUIRED", "Un concepto de hotel debe tener un hotel seleccionado.");
+            }
+
+            if (!await _context.Hotels.AnyAsync(h => h.Id == item.HotelId.Value && h.IsActive, cancellationToken))
+            {
+                throw new NotFoundException("HOTEL_NOT_FOUND", "El hotel seleccionado no existe o está inactivo.");
+            }
+
+            if (!item.CheckIn.HasValue || !item.CheckOut.HasValue || item.CheckOut.Value.Date <= item.CheckIn.Value.Date)
+            {
+                throw new ValidationException("HOTEL_DATES_INVALID", "El check-out debe ser posterior al check-in.");
+            }
+
+            if (string.IsNullOrWhiteSpace(item.RoomType) || item.NumberOfRooms is not > 0 || item.Occupancy is not > 0 || !item.BoardBasis.HasValue)
+            {
+                throw new ValidationException("HOTEL_DETAILS_INVALID", "El hotel debe tener habitación, habitaciones, huéspedes y régimen válidos.");
+            }
+        }
     }
 
     /// <summary>

@@ -66,6 +66,8 @@
                                         <Run Text="Total: " /><Run Text="{Binding TotalPrice}" />
                                     </TextBlock>
                                 </StackPanel>
+                                <TextBlock FontSize="12" Opacity="0.7" Text="{Binding CheckIn}" />
+                                <TextBlock FontSize="12" Opacity="0.7"><Run Text="Noches: " /><Run Text="{Binding Nights}" /><Run Text=" · Habitación: " /><Run Text="{Binding RoomType}" /><Run Text=" · Régimen: " /><Run Text="{Binding BoardBasis}" /></TextBlock>
                             </StackPanel>
                         </Grid>
                     </DataTemplate>

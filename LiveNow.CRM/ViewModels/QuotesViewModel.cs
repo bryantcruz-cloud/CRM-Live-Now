@@ -17,6 +17,7 @@ public class QuotesViewModel : ViewModelBase
     private ObservableCollection<CustomerDto> _customers = new();
     private ObservableCollection<RaceDto> _races = new();
     private ObservableCollection<RaceEditionDto> _editions = new();
+    private ObservableCollection<HotelDto> _hotels = new();
 
     private string _searchText = string.Empty;
     private QuoteStatusEnum? _selectedStatusFilter;
@@ -54,6 +55,12 @@ public class QuotesViewModel : ViewModelBase
     {
         get => _editions;
         private set => SetProperty(ref _editions, value);
+    }
+
+    public ObservableCollection<HotelDto> Hotels
+    {
+        get => _hotels;
+        private set => SetProperty(ref _hotels, value);
     }
 
     public string SearchText
@@ -199,11 +206,13 @@ public class QuotesViewModel : ViewModelBase
         {
             var customersTask = _apiClient.GetCustomersAsync(page: 1, pageSize: 100);
             var racesTask = _apiClient.GetRacesAsync();
+            var hotelsTask = _apiClient.GetHotelsAsync();
 
-            await Task.WhenAll(customersTask, racesTask);
+            await Task.WhenAll(customersTask, racesTask, hotelsTask);
 
             var customers = await customersTask;
             var races = await racesTask;
+            var hotels = await hotelsTask;
 
             if (customers is not null)
             {
@@ -213,6 +222,11 @@ public class QuotesViewModel : ViewModelBase
             if (races is not null)
             {
                 Races = new ObservableCollection<RaceDto>(races);
+            }
+
+            if (hotels is not null)
+            {
+                Hotels = new ObservableCollection<HotelDto>(hotels);
             }
         }
         catch (Exception)

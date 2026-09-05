@@ -52,6 +52,16 @@ public class QuoteItemDto
     public decimal TotalCost { get; set; }
     public decimal TotalPrice { get; set; }
     public string? Notes { get; set; }
+    public Guid? HotelId { get; set; }
+    public Guid? SupplierId { get; set; }
+    public DateTime? CheckIn { get; set; }
+    public DateTime? CheckOut { get; set; }
+    public int? Nights { get; set; }
+    public string? RoomType { get; set; }
+    public int? NumberOfRooms { get; set; }
+    public int? Occupancy { get; set; }
+    public HotelBoardBasisEnum? BoardBasis { get; set; }
+    public string? ReservationPolicy { get; set; }
 
     public static QuoteItemDto FromEntity(QuoteItem entity)
     {
@@ -66,7 +76,17 @@ public class QuoteItemDto
             UnitPrice = entity.UnitPrice,
             TotalCost = entity.TotalCost,
             TotalPrice = entity.TotalPrice,
-            Notes = entity.Notes
+            Notes = entity.Notes,
+            HotelId = entity.HotelId,
+            SupplierId = entity.SupplierId,
+            CheckIn = entity.CheckIn,
+            CheckOut = entity.CheckOut,
+            Nights = entity.Nights,
+            RoomType = entity.RoomType,
+            NumberOfRooms = entity.NumberOfRooms,
+            Occupancy = entity.Occupancy,
+            BoardBasis = entity.BoardBasis,
+            ReservationPolicy = entity.ReservationPolicy
         };
     }
 }
@@ -91,6 +111,15 @@ public class CreateQuoteItemDto
     public decimal UnitCost { get; set; }
     public decimal UnitPrice { get; set; }
     public string? Notes { get; set; }
+    public Guid? HotelId { get; set; }
+    public Guid? SupplierId { get; set; }
+    public DateTime? CheckIn { get; set; }
+    public DateTime? CheckOut { get; set; }
+    public string? RoomType { get; set; }
+    public int? NumberOfRooms { get; set; }
+    public int? Occupancy { get; set; }
+    public HotelBoardBasisEnum? BoardBasis { get; set; }
+    public string? ReservationPolicy { get; set; }
 }
 
 public class UpdateQuoteDto

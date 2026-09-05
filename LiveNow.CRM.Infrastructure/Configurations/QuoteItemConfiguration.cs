@@ -42,6 +42,10 @@ public class QuoteItemConfiguration : IEntityTypeConfiguration<QuoteItem>
         builder.Property(qi => qi.Notes)
             .HasMaxLength(1000);
 
+        builder.Property(qi => qi.RoomType).HasMaxLength(200);
+        builder.Property(qi => qi.ReservationPolicy).HasMaxLength(1000);
+        builder.Property(qi => qi.BoardBasis).HasConversion<int>();
+
         builder.HasIndex(qi => qi.QuoteId);
 
         // Foreign key

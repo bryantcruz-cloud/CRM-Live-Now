@@ -603,6 +603,15 @@ namespace LiveNow.CRM.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("BoardBasis")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("CheckIn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CheckOut")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
@@ -614,20 +623,43 @@ namespace LiveNow.CRM.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("HotelId")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ItemType")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("Nights")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Notes")
                         .HasMaxLength(1000)
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("NumberOfRooms")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Occupancy")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
                     b.Property<Guid>("QuoteId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ReservationPolicy")
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoomType")
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("SupplierId")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("TotalCost")
@@ -1047,6 +1079,15 @@ namespace LiveNow.CRM.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("BoardBasis")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("CheckIn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CheckOut")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
@@ -1058,10 +1099,22 @@ namespace LiveNow.CRM.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("HotelId")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ItemType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Nights")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("NumberOfRooms")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Occupancy")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Quantity")
@@ -1070,7 +1123,18 @@ namespace LiveNow.CRM.Infrastructure.Migrations
                     b.Property<Guid?>("RaceSlotId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ReservationPolicy")
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoomType")
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("SaleId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("SupplierId")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("TotalCost")

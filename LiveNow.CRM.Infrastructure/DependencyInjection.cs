@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using LiveNow.CRM.Core.Interfaces;
 using LiveNow.CRM.Infrastructure.Data;
+using LiveNow.CRM.Infrastructure.Repositories;
 
 namespace LiveNow.CRM.Infrastructure;
 
@@ -37,6 +38,7 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
         return services;
     }

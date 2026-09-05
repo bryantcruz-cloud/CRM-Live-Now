@@ -55,7 +55,7 @@ public sealed partial class QuotesView : Page
 
     private async void NewQuoteButton_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new QuoteFormDialog(ViewModel.Customers, ViewModel.Races, ViewModel.Editions);
+        var dialog = new QuoteFormDialog(ViewModel.Customers, ViewModel.Races, ViewModel.Editions, hotels: ViewModel.Hotels);
         dialog.XamlRoot = this.XamlRoot;
         var result = await dialog.ShowAsync();
 
@@ -96,7 +96,7 @@ public sealed partial class QuotesView : Page
             var quote = await ViewModel.GetQuoteByIdAsync(id);
             if (quote != null && (quote.Status == Core.Enums.QuoteStatusEnum.Draft || quote.Status == Core.Enums.QuoteStatusEnum.Sent))
             {
-                var dialog = new QuoteFormDialog(ViewModel.Customers, ViewModel.Races, ViewModel.Editions, quote);
+                var dialog = new QuoteFormDialog(ViewModel.Customers, ViewModel.Races, ViewModel.Editions, quote, ViewModel.Hotels);
                 dialog.XamlRoot = this.XamlRoot;
                 var result = await dialog.ShowAsync();
 

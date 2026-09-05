@@ -49,7 +49,7 @@ public class QuoteServiceTests : TestBase
             Items = new()
             {
                 new CreateQuoteItemDto { Description = "Entry", ItemType = QuoteItemTypeEnum.Entry, Quantity = 1, UnitCost = 500m, UnitPrice = 1000m },
-                new CreateQuoteItemDto { Description = "Hotel", ItemType = QuoteItemTypeEnum.Hotel, Quantity = 2, UnitCost = 200m, UnitPrice = 300m }
+                new CreateQuoteItemDto { Description = "Hotel", ItemType = QuoteItemTypeEnum.Hotel, Quantity = 2, UnitCost = 200m, UnitPrice = 300m, HotelId = SeedHotelId(), CheckIn = new DateTime(2031, 10, 1), CheckOut = new DateTime(2031, 10, 3), RoomType = "Doble", NumberOfRooms = 1, Occupancy = 2, BoardBasis = HotelBoardBasisEnum.Breakfast }
             }
         };
 
@@ -81,6 +81,48 @@ public class QuoteServiceTests : TestBase
         QuoteDto accepted = await _service.AcceptAsync(quote.Id);
 
         accepted.Status.Should().Be(QuoteStatusEnum.Accepted);
+    }
+
+    [Fact]
+    public async Task Create_HotelItem_WithInvalidDates_Should_Fail()
+    {
+        Guid hotelId = SeedHotelId();
+        CreateQuoteDto dto = new()
+        {
+            CustomerId = _customerId,
+            RaceEditionId = _editionId,
+            Items = [new CreateQuoteItemDto { Description = "Hotel", ItemType = QuoteItemTypeEnum.Hotel, HotelId = hotelId, CheckIn = new DateTime(2031, 10, 3), CheckOut = new DateTime(2031, 10, 3), RoomType = "Doble", NumberOfRooms = 1, Occupancy = 2, BoardBasis = HotelBoardBasisEnum.RoomOnly }]
+        };
+
+        Func<Task> act = () => _service.CreateAsync(dto);
+
+        await act.Should().ThrowAsync<ValidationException>().WithMessage("*check-out*posterior*");
+    }
+
+    [Fact]
+    public async Task CreateAndConvert_HotelItem_Should_PersistNightsAndHotelDetailsInSale()
+    {
+        Guid hotelId = SeedHotelId();
+        QuoteDto created = await _service.CreateAsync(new CreateQuoteDto
+        {
+            CustomerId = _customerId,
+            RaceEditionId = _editionId,
+            Items = [new CreateQuoteItemDto { Description = "Hotel stay", ItemType = QuoteItemTypeEnum.Hotel, HotelId = hotelId, CheckIn = new DateTime(2031, 11, 1), CheckOut = new DateTime(2031, 11, 4), RoomType = "Suite", NumberOfRooms = 2, Occupancy = 3, BoardBasis = HotelBoardBasisEnum.HalfBoard, ReservationPolicy = "No reembolso" }]
+        });
+
+        created.Items.Single().Nights.Should().Be(3);
+        await _service.SendAsync(created.Id);
+        await _service.AcceptAsync(created.Id);
+        await _service.ConvertToSaleAsync(created.Id, new ConvertQuoteToSaleDto());
+
+        SaleItem item = await Context.SaleItems.SingleAsync();
+        item.HotelId.Should().Be(hotelId);
+        item.Nights.Should().Be(3);
+        item.RoomType.Should().Be("Suite");
+        item.NumberOfRooms.Should().Be(2);
+        item.Occupancy.Should().Be(3);
+        item.BoardBasis.Should().Be(HotelBoardBasisEnum.HalfBoard);
+        item.ReservationPolicy.Should().Be("No reembolso");
     }
 
     [Fact]
@@ -236,5 +278,13 @@ public class QuoteServiceTests : TestBase
         }
 
         return await _service.CreateAsync(dto);
+    }
+
+    private Guid SeedHotelId()
+    {
+        Hotel hotel = new() { Name = $"Hotel {Guid.NewGuid():N}", City = "City", Country = "Country" };
+        Context.Hotels.Add(hotel);
+        Context.SaveChanges();
+        return hotel.Id;
     }
 }

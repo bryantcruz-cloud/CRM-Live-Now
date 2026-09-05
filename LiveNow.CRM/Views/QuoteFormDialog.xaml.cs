@@ -261,6 +261,15 @@ public sealed partial class QuoteFormDialog : ContentDialog
                 Quantity = i.Quantity,
                 UnitCost = i.UnitCost,
                 UnitPrice = i.UnitPrice
+                ,HotelId = i.HotelId
+                ,SupplierId = i.SupplierId
+                ,CheckIn = i.CheckIn
+                ,CheckOut = i.CheckOut
+                ,RoomType = i.RoomType
+                ,NumberOfRooms = i.NumberOfRooms
+                ,Occupancy = i.Occupancy
+                ,BoardBasis = i.BoardBasis
+                ,ReservationPolicy = i.ReservationPolicy
             }).ToList()
         };
     }
