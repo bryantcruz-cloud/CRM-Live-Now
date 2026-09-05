@@ -170,17 +170,33 @@ public class ApiClient
         return await PutAsync<UpdateRegistrationDto, RegistrationDto>($"api/registrations/{id}", dto, ct);
     }
 
+    // Tracking / checklist
+    public async Task<IReadOnlyList<ChecklistItemDto>?> GetChecklistAsync(Guid customerId, CancellationToken ct = default)
+        => await GetAsync<IReadOnlyList<ChecklistItemDto>>($"api/customers/{customerId}/checklist", ct);
+
+    public async Task<ChecklistItemDto?> UpdateChecklistAsync(Guid id, UpdateChecklistItemDto dto, CancellationToken ct = default)
+        => await PutAsync<UpdateChecklistItemDto, ChecklistItemDto>($"api/checklist/{id}", dto, ct);
+
+    public async Task<ChecklistItemDto?> CreateChecklistAsync(Guid customerId, CreateChecklistItemDto dto, CancellationToken ct = default)
+        => await PostAsync<CreateChecklistItemDto, ChecklistItemDto>($"api/customers/{customerId}/checklist", dto, ct);
+
     // Cancellations
     public async Task<CancellationDto?> CreateCancellationAsync(CreateCancellationDto dto, CancellationToken ct = default)
     {
         return await PostAsync<CreateCancellationDto, CancellationDto>("api/cancellations", dto, ct);
     }
 
+    public async Task<IReadOnlyList<CancellationDto>?> GetCancellationsAsync(CancellationToken ct = default)
+        => await GetAsync<IReadOnlyList<CancellationDto>>("api/cancellations", ct);
+
     // Transfers
     public async Task<SlotTransferDto?> TransferSlotAsync(Guid slotId, SlotTransferRequestDto dto, CancellationToken ct = default)
     {
         return await PostAsync<SlotTransferRequestDto, SlotTransferDto>($"api/race-slots/{slotId}/transfer", dto, ct);
     }
+
+    public async Task<IReadOnlyList<SlotTransferDto>?> GetTransfersAsync(CancellationToken ct = default)
+        => await GetAsync<IReadOnlyList<SlotTransferDto>>("api/race-slots/transfers", ct);
 
     // Quotes
     public async Task<PagedResult<QuoteDto>?> GetQuotesAsync(int page = 1, int pageSize = 20, QuoteStatusEnum? status = null, CancellationToken ct = default)
@@ -265,10 +281,19 @@ public class ApiClient
     }
 
     // Audit
-    public async Task<IReadOnlyList<AuditLogDto>?> GetAuditLogsAsync(int limit = 50, CancellationToken ct = default)
+    public async Task<IReadOnlyList<AuditLogDto>?> GetAuditLogsAsync(int limit = 50, DateTime? from = null, DateTime? to = null, string? entity = null, AuditActionEnum? action = null, string? userId = null, CancellationToken ct = default)
     {
-        return await GetAsync<IReadOnlyList<AuditLogDto>>($"api/reports/audit-logs?limit={limit}", ct);
+        string url = $"api/reports/audit-logs?limit={limit}";
+        if (from.HasValue) url += $"&from={Uri.EscapeDataString(from.Value.ToString("O"))}";
+        if (to.HasValue) url += $"&to={Uri.EscapeDataString(to.Value.ToString("O"))}";
+        if (!string.IsNullOrWhiteSpace(entity)) url += $"&entity={Uri.EscapeDataString(entity)}";
+        if (action.HasValue) url += $"&action={(int)action.Value}";
+        if (!string.IsNullOrWhiteSpace(userId)) url += $"&userId={Uri.EscapeDataString(userId)}";
+        return await GetAsync<IReadOnlyList<AuditLogDto>>(url, ct);
     }
+
+    public async Task<OperationalSummaryDto?> GetOperationalSummaryAsync(CancellationToken ct = default)
+        => await GetAsync<OperationalSummaryDto>("api/reports/operational-summary", ct);
 
     // Health
     public async Task<bool> IsHealthyAsync(CancellationToken ct = default)

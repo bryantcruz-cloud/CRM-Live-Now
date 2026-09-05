@@ -20,6 +20,10 @@ public class RaceSlotsController : ApiControllerBase
         _transferService = transferService;
     }
 
+    [HttpGet("transfers")]
+    public async Task<ActionResult<IReadOnlyList<SlotTransferDto>>> GetTransfers(CancellationToken cancellationToken = default)
+        => Ok(await _transferService.GetAllAsync(cancellationToken));
+
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(RaceSlotDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

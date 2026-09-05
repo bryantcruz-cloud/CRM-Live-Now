@@ -32,6 +32,7 @@ public abstract class ServiceTestBase : TestBase
     protected ChecklistService ChecklistService { get; }
     protected CancellationService CancellationService { get; }
     protected TransferService TransferService { get; }
+    protected ReportingService ReportingService { get; }
 
     protected ServiceTestBase()
     {
@@ -51,6 +52,7 @@ public abstract class ServiceTestBase : TestBase
         ChecklistService = new ChecklistService(Context, UnitOfWork, AuditService);
         CancellationService = new CancellationService(Context, UnitOfWork, AuditService);
         TransferService = new TransferService(Context, UnitOfWork, AuditService);
+        ReportingService = new ReportingService(Context, PaymentService);
     }
 
     protected async Task<Customer> SeedCustomerAsync(string firstName = "John", string lastName = "Doe")

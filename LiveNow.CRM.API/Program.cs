@@ -26,6 +26,10 @@ builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+    builder.Services.AddScoped<IReportingService, ReportingService>();
+    builder.Services.AddScoped<IChecklistService, ChecklistService>();
+    builder.Services.AddScoped<ICancellationService, CancellationService>();
+    builder.Services.AddScoped<ITransferService, TransferService>();
 
 // Add CORS for WinUI client
 builder.Services.AddCors(options =>

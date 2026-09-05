@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="LiveNow.CRM.Views.DashboardView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:LiveNow.CRM.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+            <TextBlock Text="Dashboard" FontSize="28" FontWeight="SemiBold" VerticalAlignment="Center" />
+            <Button Content="Actualizar" Margin="20,0,0,0" VerticalAlignment="Center" Click="RefreshButton_Click" />
+        </StackPanel>
+
+        <!-- Error message -->
+        <InfoBar
+            Grid.Row="1"
+            IsOpen="{x:Bind ViewModel.HasError, Mode=OneWay}"
+            Severity="Error"
+            Message="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+            Margin="0,0,0,10" />
+
+        <!-- Loading -->
+        <ProgressRing
+            Grid.Row="2"
+            IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Width="50" Height="50" />
+
+        <!-- Summary Cards -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <ItemsRepeater ItemsSource="{x:Bind SummaryCards, Mode=OneWay}">
+                <ItemsRepeater.Layout>
+                    <UniformGridLayout
+                        MinItemWidth="220"
+                        MinItemHeight="120"
+                        MinRowSpacing="10"
+                        MinColumnSpacing="10"
+                        ItemsStretch="Fill" />
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Title}" FontSize="14" Opacity="0.7" />
+                                <TextBlock Text="{Binding Value}" FontSize="32" FontWeight="Bold" Margin="0,4,0,0" />
+                                <TextBlock Text="{Binding Subtitle}" FontSize="12" Opacity="0.5" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+        </ScrollViewer>
+    </Grid>
+</Page>
