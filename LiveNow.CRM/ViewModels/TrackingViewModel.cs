@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using LiveNow.CRM.Core.Common;
 using LiveNow.CRM.Core.DTOs;
 using LiveNow.CRM.Services;
 

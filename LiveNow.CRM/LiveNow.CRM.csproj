@@ -10,18 +10,23 @@
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
+    <WindowsSdkPackageVersion>10.0.19041.57</WindowsSdkPackageVersion>
+    <!-- Windows App SDK 1.5 executable XamlCompiler is unsupported under MSBuild Core. -->
+    <UseXamlCompilerExecutable>false</UseXamlCompilerExecutable>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Assets\***" />
+    <Content Include="Assets\**\*" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240321000" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240829007" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.3233" />
+    <PackageReference Include="System.Security.Permissions" Version="6.0.0" GeneratePathProperty="true" PrivateAssets="all" />
+    <PackageReference Include="System.Security.AccessControl" Version="6.0.0" GeneratePathProperty="true" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

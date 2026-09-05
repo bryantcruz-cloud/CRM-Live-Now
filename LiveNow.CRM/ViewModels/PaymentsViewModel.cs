@@ -14,7 +14,7 @@ public sealed class PaymentsViewModel : ViewModelBase
     public PaymentsViewModel(ApiClient apiClient) => _apiClient = apiClient;
     public ObservableCollection<SaleDto> Sales { get; } = new();
     public ObservableCollection<PaymentDto> Payments { get; } = new();
-    public SaleDto? SelectedSale { get => _selectedSale; private set => SetProperty(ref _selectedSale, value); }
+    public SaleDto? SelectedSale { get => _selectedSale; set => SetProperty(ref _selectedSale, value); }
     public SaleFinancialSummaryDto? FinancialSummary { get => _financialSummary; private set => SetProperty(ref _financialSummary, value); }
     public IReadOnlyList<PaymentMethodEnum> PaymentMethods { get; } = Enum.GetValues<PaymentMethodEnum>();
     public IReadOnlyList<PaymentFeeTypeEnum> FeeTypes { get; } = Enum.GetValues<PaymentFeeTypeEnum>();
@@ -63,4 +63,3 @@ public sealed class PaymentsViewModel : ViewModelBase
         finally { IsLoading = false; }
     }
 }
-

@@ -62,5 +62,7 @@ logs/
 ## Secrets
 appsettings.Development.json
 appsettings.Production.json
+!**/appsettings.Development.example.json
+!**/appsettings.Production.example.json
 *.pfx
 *.key

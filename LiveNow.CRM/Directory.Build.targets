@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup Condition="'$(UseWinUI)' == 'true'">
+    <UseXamlCompilerExecutable Condition="'$(MSBuildRuntimeType)' == 'Core'">true</UseXamlCompilerExecutable>
+  </PropertyGroup>
+
+  <Target Name="PrepareXamlCompilerDependencies" BeforeTargets="MarkupCompilePass1;MarkupCompilePass2" Condition="'$(UseWinUI)' == 'true'">
+    <Copy SourceFiles="$(PkgSystem_Security_Permissions)\lib\net6.0\System.Security.Permissions.dll"
+          DestinationFiles="$(PkgMicrosoft_WindowsAppSDK)\tools\net6.0\System.Security.Permissions.dll" />
+    <Copy SourceFiles="$(PkgSystem_Security_Permissions)\lib\net461\System.Security.Permissions.dll"
+          DestinationFiles="$(PkgMicrosoft_WindowsAppSDK)\tools\net472\System.Security.Permissions.dll" />
+    <Copy SourceFiles="$(PkgSystem_Security_AccessControl)\lib\net6.0\System.Security.AccessControl.dll"
+          DestinationFiles="$(PkgMicrosoft_WindowsAppSDK)\tools\net6.0\System.Security.AccessControl.dll" />
+    <Copy SourceFiles="$(PkgSystem_Security_AccessControl)\lib\net461\System.Security.AccessControl.dll"
+          DestinationFiles="$(PkgMicrosoft_WindowsAppSDK)\tools\net472\System.Security.AccessControl.dll" />
+  </Target>
+</Project>
