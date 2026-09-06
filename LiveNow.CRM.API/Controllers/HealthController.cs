@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LiveNow.CRM.API.Controllers;
 
@@ -6,6 +7,7 @@ namespace LiveNow.CRM.API.Controllers;
 [Route("api/[controller]")]
 public class HealthController : ApiControllerBase
 {
+    [AllowAnonymous]
     [HttpGet]
     public IActionResult Get()
     {
