@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LiveNow.CRM.Core\LiveNow.CRM.Core.csproj" />
     <ProjectReference Include="..\LiveNow.CRM.Infrastructure\LiveNow.CRM.Infrastructure.csproj" />
+    <ProjectReference Include="..\LiveNow.CRM.Infrastructure.PostgreSql\LiveNow.CRM.Infrastructure.PostgreSql.csproj" />
   </ItemGroup>
 
 </Project>

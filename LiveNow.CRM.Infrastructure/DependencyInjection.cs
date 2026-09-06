@@ -17,19 +17,22 @@ public static class DependencyInjection
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
         string? databaseProvider = configuration["DatabaseProvider"]?.ToLowerInvariant();
+        string migrationsAssembly = databaseProvider == "postgresql"
+            ? "LiveNow.CRM.Infrastructure.PostgreSql"
+            : "LiveNow.CRM.Infrastructure";
 
         services.AddDbContext<LiveNowDbContext>(options =>
         {
             switch (databaseProvider)
             {
                 case "sqlite":
-                    options.UseSqlite(connectionString, b => b.MigrationsAssembly("LiveNow.CRM.Infrastructure"));
+                    options.UseSqlite(connectionString, b => b.MigrationsAssembly(migrationsAssembly));
                     break;
                 case "sqlserver":
-                    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("LiveNow.CRM.Infrastructure"));
+                    options.UseSqlServer(connectionString, b => b.MigrationsAssembly(migrationsAssembly));
                     break;
                 case "postgresql":
-                    options.UseNpgsql(connectionString, b => b.MigrationsAssembly("LiveNow.CRM.Infrastructure"));
+                    options.UseNpgsql(connectionString, b => b.MigrationsAssembly(migrationsAssembly));
                     break;
                 default:
                     options.UseSqlite(connectionString, b => b.MigrationsAssembly("LiveNow.CRM.Infrastructure"));
