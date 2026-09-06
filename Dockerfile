@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["LiveNow.CRM.Core/LiveNow.CRM.Core.csproj", "LiveNow.CRM.Core/"]
 COPY ["LiveNow.CRM.Infrastructure/LiveNow.CRM.Infrastructure.csproj", "LiveNow.CRM.Infrastructure/"]
+COPY ["LiveNow.CRM.Infrastructure.PostgreSql/LiveNow.CRM.Infrastructure.PostgreSql.csproj", "LiveNow.CRM.Infrastructure.PostgreSql/"]
 COPY ["LiveNow.CRM.API/LiveNow.CRM.API.csproj", "LiveNow.CRM.API/"]
 RUN dotnet restore "LiveNow.CRM.API/LiveNow.CRM.API.csproj"
 COPY . .
